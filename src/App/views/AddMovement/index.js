@@ -4,6 +4,7 @@ import { Api } from "services/api";
 import Button from "shared/components/Button";
 import H1 from "shared/components/H1";
 import Input from "shared/components/Input";
+import Loader from "shared/components/Loader";
 import styled from "styled-components";
 
 export default function AddMovement() {
@@ -13,11 +14,13 @@ export default function AddMovement() {
   const id = location.state.id;
   const [value, setValue] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   async function onFinish(e) {
     try {
       e.preventDefault();
+      setLoading(true);
 
       const body = {
         value,
@@ -31,17 +34,25 @@ export default function AddMovement() {
         await Api.put(`updateMovement/${id}`, body);
       }
 
+      setLoading(false);
       navigate("/");
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }
 
   useEffect(() => {
     const getMovement = async () => {
-      const res = await (await Api.get(`movementById/${id}`)).data;
-      setValue(res.value);
-      setDescription(res.description);
+      try {
+        setLoading(true);
+        const res = await (await Api.get(`movementById/${id}`)).data;
+        setLoading(false);
+        setValue(res.value);
+        setDescription(res.description);
+      } catch (error) {
+        setLoading(false);
+      }
     };
 
     if (method != "post") {
@@ -51,6 +62,7 @@ export default function AddMovement() {
 
   return (
     <>
+      <Loader loading={loading} />
       <H1>
         {method === "post" ? "Nova," : "Editar"} {type}
       </H1>

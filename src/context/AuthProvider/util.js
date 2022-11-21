@@ -17,11 +17,11 @@ export function getUserLocalStorage() {
 
 export async function LoginRequest(email, password) {
   try {
-    const request = await Api.post("signin", {
+    const request = Api.post("signin", {
       email,
       password,
     });
-    return request.data;
+    return request;
   } catch (error) {
     return null;
   }

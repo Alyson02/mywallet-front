@@ -9,7 +9,7 @@ import {
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getUserLocalStorage());
 
   useEffect(() => {
     const user = getUserLocalStorage();
@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
 
   function authenticate(email, password) {
     const response = LoginRequest(email, password).then((r) => {
-      const payload = r;
+      console.log(r.data);
+      const payload = r.data;
       setUser(payload);
       setUserLocalStorage(payload);
     });
