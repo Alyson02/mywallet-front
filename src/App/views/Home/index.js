@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Api } from "services/api";
 import H1 from "shared/components/H1";
+import Loader from "shared/components/Loader";
 import styled from "styled-components";
 import {
   Button,
@@ -25,13 +26,16 @@ import {
 
 export default function Home() {
   const auth = useAuth();
-  const [movements, setMovements] = useState([]);
+  const [movements, setMovements] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       const res = await Api.get("history");
       setMovements(res.data);
+      setLoading(false);
     };
 
     loadData();
@@ -92,7 +96,9 @@ export default function Home() {
         </svg>
       </Header>
       <HistoryWrapper>
-        {movements.length > 0 ? (
+        {movements === null ? (
+          <Loader loading={loading} />
+        ) : movements.length > 0 ? (
           <>
             <History>
               {movements.map((m) => {
@@ -115,8 +121,8 @@ export default function Home() {
                         }
                       >
                         {m.description
-                          .substring(0, 25)
-                          .concat("", m.description.length > 25 ? "..." : "")}
+                          .substring(0, 12)
+                          .concat("", m.description.length > 12 ? "..." : "")}
                       </Movement>
                     </DateAndDescription>
                     <span style={{ paddingLeft: 10, paddingRight: 20 }}>

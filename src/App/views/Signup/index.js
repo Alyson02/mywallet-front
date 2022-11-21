@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "shared/components/Button";
 import Input from "shared/components/Input";
+import Loader from "shared/components/Loader";
 import styled from "styled-components";
 
 export default function Signup() {
@@ -12,6 +13,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [textError, setTextError] = useState("");
+  const [loadfing, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const auth = useAuth();
@@ -27,7 +29,15 @@ export default function Signup() {
       email,
     };
 
-    auth.signup(body).then(() => navigate("/"));
+    setLoading(true);
+
+    auth
+      .signup(body)
+      .then(() => {
+        navigate("/");
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }
 
   useEffect(() => {
@@ -36,6 +46,7 @@ export default function Signup() {
 
   return (
     <Container>
+      <Loader loading={loadfing} />
       <TextLogo>MyWallet</TextLogo>
       <Form onSubmit={submit}>
         <Input onChange={(e) => setName(e.target.value)} placeholder="Nome" />

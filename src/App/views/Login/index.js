@@ -3,24 +3,31 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "shared/components/Button";
 import Input from "shared/components/Input";
+import Loader from "shared/components/Loader";
 import styled from "styled-components";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const auth = useAuth();
 
   function onFinish(e) {
     e.preventDefault();
+    setLoading(true);
 
     auth
       .authenticate(email, password)
       .then(() => {
+        setLoading(false);
         navigate("/");
       })
-      .catch((err) => console.log(err));
+      .catch(() => {
+        alert("Usuario ou senha inválidos!");
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
@@ -29,6 +36,7 @@ export default function Login() {
 
   return (
     <Container>
+      <Loader loading={loading} />
       <TextLogo>MyWallet</TextLogo>
       <Form onSubmit={onFinish}>
         <Input
