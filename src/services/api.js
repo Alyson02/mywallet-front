@@ -2,7 +2,7 @@ import axios from "axios";
 import { getUserLocalStorage } from "../context/AuthProvider/util";
 
 export const Api = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: "https://mywallet-api-83fz.onrender.com/",
 });
 
 Api.interceptors.request.use(
